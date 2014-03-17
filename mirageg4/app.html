@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+        <title>Mitsubishi Motors Philippines</title>
+        <!-- Building blocks -->
+        <link rel="stylesheet" href="style/action_menu.css">
+        <link rel="stylesheet" href="style/buttons.css">
+        <link rel="stylesheet" href="style/confirm.css">
+        <link rel="stylesheet" href="style/edit_mode.css">
+        <link rel="stylesheet" href="style/headers.css">
+        <link rel="stylesheet" href="style/input_areas.css">
+        <link rel="stylesheet" href="style/status.css">
+        <link rel="stylesheet" href="style/switches.css">
+        <link rel="stylesheet" href="style_unstable/drawer.css">
+        <link rel="stylesheet" href="style_unstable/lists.css">
+        <link rel="stylesheet" href="style_unstable/progress_activity.css">
+        <link rel="stylesheet" href="style_unstable/scrolling.css">
+        <link rel="stylesheet" href="style_unstable/seekbars.css">
+        <link rel="stylesheet" href="style_unstable/tabs.css">
+        <link rel="stylesheet" href="style_unstable/toolbars.css">
+        <link rel="stylesheet" href="style/overide.css">
+        <!-- Icons -->
+        <link rel="stylesheet" href="icons/styles/action_icons.css">
+        <link rel="stylesheet" href="icons/styles/media_icons.css">
+        <link rel="stylesheet" href="icons/styles/comms_icons.css">
+        <link rel="stylesheet" href="icons/styles/settings_icons.css">
+
+        <!-- Transitions -->
+        <link rel="stylesheet" href="transitions.css">
+
+        <!-- Util CSS: some extra tricks -->
+        <link rel="stylesheet" href="util.css">
+        <link rel="stylesheet" href="fonts.css">
+
+        <!-- Additional markup to make Building Blocks kind of cross browser -->
+        <link rel="stylesheet" href="cross_browser.css">
+
+        <style>
+            #index {
+                height: 100%;
+                overflow: hidden;
+
+            }
+            [data-position="right"] {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                transform: translateX(100%);
+                -webkit-transform: translateX(100%);
+                z-index: 15;
+                z-index: 100; /* -> drawer */
+            }
+            section[role="region"][data-position="right"] {
+                position: absolute;
+            }
+            [data-position="right"].current {
+                animation: rightToCurrent 0.4s forwards;
+                -webkit-animation: rightToCurrent 0.4s forwards;
+            }
+            [data-position="right"].right {
+                animation: currentToRight 0.4s forwards;
+                -webkit-animation: currentToRight 0.4s forwards;
+            }
+            [data-position="current"].left {
+                animation: currentToLeft 0.4s forwards;
+                -webkit-animation: currentToLeft 0.4s forwards;
+            }
+            [data-position="current"].current {
+                animation: leftToCurrent 0.4s forwards;
+                -webkit-animation: leftToCurrent 0.4s forwards;
+            }
+            [data-position="back"] {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: -1;
+                opacity: 0;
+                /* z-index: 100; -> drawer */
+            }
+            [data-position="back"].fade-in {
+                z-index: 120;
+                animation: fadeIn 0.2s forwards;
+                -webkit-animation: fadeIn 0.2s forwards;
+            }
+            [data-position="back"].fade-out {
+                animation: fadeOut 0.2s forwards;
+                -webkit-animation: fadeOut 0.2s forwards;
+            }
+
+            [data-position="edit-mode"] {
+                position: absolute;
+                top: -5rem;
+                left: 0;
+                right: 0;
+                bottom: -7rem;
+                z-index: -1;
+                opacity: 0;
+                transition: all 0.3s ease;
+            }
+            [data-position="edit-mode"].edit {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 120;
+                opacity: 1;
+            }
+
+            /* Headers */
+            #headers section[role="region"] {
+                margin-bottom: 1.5rem;
+            }
+            #headers section[role="region"]:not(#drawer) {
+                display: inline;
+            }
+            #headers article header:first-child {
+                margin-top: 1.5rem;
+            }
+            #headers section[role="region"] header h2 {
+                margin: 0 0 1.5rem 0;
+            }
+
+            /* Lists */
+            /* to avoid double background effect on press */
+            [data-type=list] li>a:active { 
+                background-color: transparent;
+            }
+
+            /* Drawer */
+            section[role="region"]:not(#drawer) {
+                transition: none;
+                left: 0;
+                z-index: 0;
+                padding-left: 0;
+            }
+            section[data-type="sidebar"] + section[role="region"] > header:first-child > button, 
+            section[data-type="sidebar"] + section[role="region"] > header:first-child > a {
+                background-position: 3.5rem center;
+            }
+
+            /* Switches */
+            #switches label:last-child {
+                margin-left: 2rem;  
+            }
+
+            /* Scrolling */
+            nav[data-type="scrollbar"] {
+                padding-top: 1rem;
+            }
+            nav[data-type="scrollbar"] p {
+                opacity: 1;
+            }
+
+            /* Seek bars */
+            div[role="slider"] > label.icon {
+                background: no-repeat right top;
+                background-size: 3rem auto;
+            }
+
+            /* Tabs */
+            #tabs .content {
+                padding: 0;
+            }
+            #tabs .content .content {
+                padding: 1.5rem 3rem;
+            }
+
+            /* Filters */
+            [role="tablist"][data-type="filter"] {
+                margin-bottom: 2rem;
+            }
+
+            .bottom[role="tablist"][data-type="filter"] {
+                bottom: auto;
+            }
+
+            /* Device rotation */
+            .landscape section[role="region"]#drawer > header:first-child {
+                /* Whatever needs to be changed on landscape */
+            }
+        </style>
+    </head>
+    <body>
+        <section id="index" data-position="current">
+            <section data-type="sidebar">
+                <header>
+                    <menu type="toolbar">
+                        <a href="#">Done</a>
+                    </menu>
+                    <h1>Get the G Life</h1>
+                </header>
+                <nav>
+
+                    <h2>Check the Great Price</h2>
+                    <ul>
+                        <li>
+                            <a id="btn-virtualquote" href="#" >Get a Virtual Quotation</a>
+
+                        </li>
+
+                    </ul>
+                    <h2>Links</h2>
+                    <ul>
+                        <li><a  href="http://www.mirageg4.ph/" target="_blank">G4 micro site</a></li>
+                    </ul>
+                    <h2></h2>
+                    <ul>
+                        <li><a href="http://mmpc.ph" target="_blank">MMPC Home</a></li>
+                        <li><a href="http://mmpc.ph/contact.php" target="_blank">Contact MMPC</a></li>
+                    </ul>
+<!--                    <h2>Dev</h2>
+                    <ul>
+                        <li><a id ="btn-disclaim" href="#">Disclaimer</a></li>
+                        <li><a href="#">License</a></li>
+                    </ul>-->
+                </nav>
+            </section>
+
+            <section id="drawer" role="region">
+                <header class="fixed">
+                    <a href="#"><span class="icon icon-menu">hide sidebar</span></a>
+                    <a href="#drawer"><span class="icon icon-menu">show sidebar</span></a>
+                    <h1>Mitsubishi Mirage G4</h1>
+                </header>
+                <article class="content scrollable header">
+                    <div data-type="list">
+
+                        <p><video id="mirage-g4-video"  width="100%" controls loop autoplay>
+                                <source src="./video/mirageg4.webm" type="video/webm"></video>
+                        </p>
+
+
+                        <header>All new Mitsubishi Mirage G4</header>
+                        <ul>
+
+                            <li><a id="btn-mirage-g4">
+                                    <p> <label class="mbluehdr">Great Colors</label></p>
+
+                                    <p>7 amazing colors</p></a>
+                            </li>
+                            <li><a id="btn-greatspace">
+                                    <p> <label class="dark-yellowhdr">Great Space</label></p>
+                                    <p>Stylish and Roomy Interior Cabin</p></a>
+
+                            </li>
+                            <li><a id="btn-greatvalue">
+                                    <p><label class="pinkhdr">Great Value</label></p>
+                                    <p>Everything you need to get the G Life</p></a>
+
+                            </li>
+                            <li><a id="btn-greatmileage">
+                                    <p><label class="bluehdr">Great Mileage</label></p>
+                                    <p>Can achieve up to an impressive 21 km/L</p></a>
+                            </li>
+                            <li><a id="btn-greatsafety">
+                                    <p><label class="redhdr">Great Safety</label></p>
+                                    <p>Dual Airbags, ABS, Immobilizer System and more</p></a>
+                            </li>
+                            <li><a id="btn-greathandling">
+                                    <p><label class="orangehdr">Great Handling</label></p>
+                                    <p>Tightest turning radius of 4.8 meters</p></a>
+                            </li>
+                            <li><a id="btn-greataccessories">
+                                    <p><label class="greenhdr">Great Accessories</label></p>
+                                    <p>Lots of accessories to choose from</p></a>
+                            </li>
+                        </ul>
+                       
+                        <!--                        <header>Variants</header>
+                        
+                                                <ul>
+                                                    <li>
+                                                        <p>Mirage G4 GLX 1.2 MT</p>
+                                                        <p>Php 578,000</p>
+                                                    </li>
+                                                    <li>
+                                                        <p>Mirage G4 GLX 1.2 CVT</p>
+                                                        <p>Php 628,000</p>
+                        
+                                                    </li>
+                                                    <li>
+                                                        <p>Mirage G4 GLS 1.2 MT</p>
+                                                        <p>Php 668,000</p>
+                        
+                                                    </li>
+                                                    <li>
+                                                        <p>Mirage G4 GLS 1.2 CVT</p>
+                                                        <p>Php 718,000</p>
+                        
+                                                    </li>
+                        
+                                                </ul>-->
+
+                    </div>
+                </article>
+            </section> <!-- end drawer -->
+        </section> <!-- end index -->
+
+        <section role="region" id="mirage-g4" data-position="right">
+            <header class="fixed">
+                <a id="btn-mirage-g4-back" href="#"><span class="icon icon-back">back</span></a>
+
+                <h1>Get Great Colors</h1>
+
+            </header>
+
+            <article class="content scrollable header">
+                <p class="scrollhere"></p>
+                <img id="colorimg" src="./images/colors/color-blue.png"  width="100%" />
+                <p id="colortxt">Medium Blue Mica</p>
+
+
+                <header><h2>Choose Great Colors:</h2></header>
+                <section data-type="list">
+
+
+
+
+                    <h2>GLS</h2>
+                    <ul>
+
+                        <li class="mbm" onclick="cblue()">
+                            <a href="#colorimg">
+                                <p> <label class="mbm">Medium Blue Mica</label></p>
+                            </a>
+                        </li>
+                        <li  class="pb" onclick="cblack()">
+                            <a href="#colorimg">
+                                <p> <label class="pb">Pyrenese Black</label></p>
+                            </a>
+                        </li>
+                        <li  class="sw" onclick="csavanna()">
+                            <a href="#colorimg">
+                                <p> <label>Savanna White</label></p>
+                            </a>
+                        </li>
+                    </ul><h2>GLS/GLX</h2>
+                    <ul>
+                        <li class="mr">
+                            <a href="#colorimg" onclick="cred()">
+                                <p> <label class="mr">Majestic Red</label></p>
+                            </a>
+                        </li>
+                        <li  class="ggm" onclick="cgrey()">
+                            <a href="#colorimg">
+                                <p> <label class="ggm">Gemstone Grey Mica</label></p>
+                            </a>
+                        </li>
+                        <li class="cs" onclick="csilver()">
+                            <a href="#colorimg">
+                                <p> <label class="cs">Cool Silver</label></p>
+
+                            </a>
+                        </li>
+                    </ul><h2>GLX</h2>
+                    <ul>
+                        <li class="aw" onclick="caurora()">
+                            <a href="#colorimg">
+                                <p> <label>Aurora White</label></p>
+
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </section>
+            </article>
+        </section>
+
+
+
+        <section role="region" id="virtualquote" data-position="right">
+            <section role="region">
+                <header class="fixed">
+                    <a id="btn-virtualquote-back" href="#"><span class="icon icon-back">back</span></a>
+                    <h1>Virtual Quotation</h1>
+                </header>
+                <article class="content scrollable header">
+                    <section data-type="list">
+                        <header><h2>Quoting</h2></header>
+
+
+
+
+                        <ul>
+                            <li>
+                                <aside class="pack-end">
+                                    <label class="pack-radio">
+                                        <input type="radio" name="dmodel" value="578000"  checked>
+                                        <span></span>
+                                    </label>
+                                </aside>
+                                <p>Mirage G4 GLX 1.2 MT</p>
+                                <p>Php 578,000</p>
+                            </li>
+                            <li>
+                                <aside class="pack-end">
+                                    <label class="pack-radio">
+                                        <input type="radio" name="dmodel" value="628000" >
+                                        <span></span>
+                                    </label>
+                                </aside>
+                                <p>Mirage G4 GLX 1.2 CVT</p>
+                                <p>Php 628,000</p>
+
+                            </li>
+                            <li>
+                                <aside class="pack-end">
+                                    <label class="pack-radio">
+                                        <input type="radio" name="dmodel" value="668000" >
+                                        <span></span>
+                                    </label>
+                                </aside>
+                                <p>Mirage G4 GLS 1.2 MT</p>
+                                <p>Php 668,000</p>
+
+                            </li>
+                            <li>
+                                <aside class="pack-end">
+                                    <label class="pack-radio">
+                                        <input type="radio" name="dmodel" value="718000" >
+                                        <span></span>
+                                    </label>
+                                </aside>
+                                <p>Mirage G4 GLS 1.2 CVT</p>
+                                <p>Php 718,000</p>
+
+                            </li>
+
+                    </section>
+                    <header><h2>Downpayment</h2></header>
+
+                    <label class="pack-radio">
+                        <input type="radio" name="downpayment" value="20" checked>
+                        <span>20%</span>
+                    </label>
+
+                    <label class="pack-radio">
+                        <input type="radio" value="30" name="downpayment">
+                        <span>30%</span>
+                    </label>
+
+                    <label class="pack-radio">
+                        <input type="radio" name="downpayment" value="40" checked>
+                        <span>40%</span>
+                    </label>
+
+                    <label class="pack-radio">
+                        <input type="radio" value="50" name="downpayment">
+                        <span>50%</span>
+                    </label>
+                    <header><h2>Payment Terms</h2></header>
+
+                    <label class="pack-radio">
+                        <input type="radio" name="paymentterms" value="12" checked>
+                        <span>12</span>
+                    </label>
+
+                    <label class="pack-radio">
+                        <input type="radio" value="24" name="paymentterms">
+                        <span>24</span>
+                    </label>
+
+                    <label class="pack-radio">
+                        <input type="radio" name="paymentterms" value="36" checked>
+                        <span>36</span>
+                    </label>
+
+                    <label class="pack-radio">
+                        <input type="radio" value="48" name="paymentterms">
+                        <span>48</span>
+                    </label>
+                    <label class="pack-radio">
+                        <input type="radio" value="60" name="paymentterms">
+                        <span>60</span>
+                    </label>
+                    <label class="pack-radio">
+                        <input type="radio" value="72" name="paymentterms">
+                        <span>72</span>
+                    </label>
+
+                    <header><h2></h2></header>
+
+                    <!--                    <p><label class="pack-checkbox">
+                                                <input type="checkbox" checked disabled>
+                                                <span></span>
+                                            </label>
+                                            <label>I know this is a virtual quoation!</label></p>
+                                        <p> <label class="pack-radio danger">
+                                                <input type="radio"  checked disabled>
+                                                <span></span>
+                                            </label>
+                                            <label>Just a quick estimate!</label></p>
+                                        <p> <label class="pack-radio danger">
+                                                <input type="radio"  checked disabled>
+                                                <span></span>
+                                            </label>
+                                            <label>Excluded from fee and discounts</label></p>
+                                        <p><label class="pack-radio ">
+                                                <input type="radio"  checked disabled>
+                                                <span></span>
+                                            </label>
+                                            <label>Dealer may give you a great discount</label></p>-->
+                    <button id="btn-virtualquoteresult" onclick="createQuotation()" >Get Quotation</button>
+
+                </article>
+            </section>
+        </section>
+        <section role="region" id="virtualquoteresult" data-position="right">
+            <section role="region">
+                <header class="fixed">
+                    <a id="btn-virtualquoteresult-back" href="#"><span class="icon icon-back">back</span></a>
+                    <h1>Virtual Quotation</h1>
+                </header>
+                <article class="content scrollable header">
+                    <section data-type="list">
+                        <header>Price</header>
+                        <ul>
+                         
+                            <li>
+                                <p id='rprice'></p>
+                                <p>SRP</p>
+                            </li>
+                        </ul>
+                        <header>Quoting for</header>
+                        <ul>
+                            <li>
+                                <p id='rdown'>10%</p>
+                                <p>Down Payment</p>
+                            </li>
+                            <li>
+                                <p id='rterms'>12 Months</p>
+                                <p>Payment Terms</p>
+                            </li>
+                        </ul>
+                        <header>Quotation</header>
+                        <ul>
+                            <li>
+                                <p id='rcashout'>Php 123,000</p>
+                                <p>Down Payment</p>
+                            </li>
+                            <li>
+                                <p id='rmonthly'>Php 12,233</p>
+                                <p>Monthly Payment</p>
+                            </li>
+                        </ul>
+                        
+                    </section>
+                    <header>*This is just a virtual quotation for a quick estimate of the unit. Prices, interests, discounts may vary in real life.</header>
+                    <header>*Dealer may give you a great discount.</header>
+              
+                </article>
+            </section>
+        </section>
+
+        <section role="region" id="greatspace" data-position="right">
+            <section role="region">
+                <header class="fixed">
+                    <a id="btn-greatspace-back" href="#"><span class="icon icon-back">back</span></a>
+                    <h1>Get Great Space</h1>
+                </header>
+                <article class="content scrollable header">
+
+
+
+                    <header><h2>Stylish and Roomy Interior Cabin</h2></header>
+                    <img src="images/space/interior.png" width="100%" />
+                    <label>The Mitsubishi Mirage G4 has a cabin space of 1,725 mm, enough legroom to comfortably seat 6-footers.</label>
+                    <header><h2>Great Trunk Space</h2></header>
+                    <img src="images/space/trunk.png" width="100%" />
+                    <label>Its 450 liters of trunk space is big enough to fit 3 full-sized golf bags. Pack what you need and take everyone with you to get the G Life.</label>
+                </article>
+            </section>
+        </section>
+
+        <section role="region" id="greatvalue" data-position="right">
+            <section role="region">
+                <header class="fixed">
+                    <a id="btn-greatvalue-back" href="#"><span class="icon icon-back">back</span></a>
+                    <h1>Get Great Value</h1>
+                </header>
+                <article class="content scrollable header">
+                    <header><h2>It is everything you need to get the G Life</h2></header>
+                    <img src="images/value/start.png" width="100%" />
+                    <label>Multimedia Entertainment System (GLS only), Engine Start/Stop Button, Auto Climate-Control System (GLS only)</label>
+                    <header><h2></h2></header>
+                    <img src="images/value/mode.png" width="100%" />
+                    <label>Audio Controller (GLS only), Keyless Operation System (GLS), Fog Lamps (GLS)</label>
+                    <header><h2></h2></header>
+                    <img src="images/value/wheel.png" width="100%" />
+                    <label>Power Side Mirror with Integrated LED-Type Turning Lamp (GLS), Stylish Front Grille (GLS), 15" Alloy Wheels (GLS)</label>
+                </article>
+            </section>
+        </section>
+
+        <section role="region" id="greatmileage" data-position="right">
+            <section role="region">
+                <header class="fixed">
+                    <a id="btn-greatmileage-back" href="#"><span class="icon icon-back">back</span></a>
+                    <h1>Get Great Mileage</h1>
+                </header>
+                <article class="content scrollable header">
+                    <header><h2>Impressive 21 km/L</h2></header>
+                    <img src="images/mileage/mileage.png" width="100%" />
+                    <label>With the combination of the 1.2L Mitsubishi Innovative Valve-timing Electronic Control system (MIVEC) engine, Continuously Variable Transmission, aerodynamic design and lightweight body, the Mitsubishi Mirage G4 can achieve up to an impressive 21 km/L* - a definite plus when getting the G Life.</label>
+                    <header><h2>Engine</h2></header>
+                    <img src="images/mileage/mivec.png" width="100%" />
+                    <label>Mitsubishi Innovative Valve timing Electronic Control system (MIVEC) Engine, Continuously Variable Transmission (CVT)</label>
+                    <header><h2>Aerodynamics</h2></header>
+                    <img src="images/mileage/aero.png" width="100%" />
+                    <label>Smooth and Aerodynamic Design and Lightweight body</label>
+                </article>
+            </section>
+        </section>
+
+        <section role="region" id="greatsafety" data-position="right">
+            <section role="region">
+                <header class="fixed">
+                    <a id="btn-greatsafety-back" href="#"><span class="icon icon-back">back</span></a>
+                    <h1>Get Great Safety</h1>
+                </header>
+                <article class="content scrollable header">
+                    <header><h2>The Reinforced Impact Safety Evolution (R.I.S.E.) Body</h2></header>
+                    <img src="images/safety/rise.png" width="100%" />
+
+                    <header><h2>Dual SRS Airbags</h2></header>
+                    <img src="images/safety/srs.png" width="100%" />
+
+                </article>
+            </section>
+        </section>
+
+        <section role="region" id="greathandling" data-position="right">
+            <section role="region">
+                <header class="fixed">
+                    <a id="btn-greathandling-back" href="#"><span class="icon icon-back">back</span></a>
+                    <h1>Get Great Handling</h1>
+                </header>
+                <article class="content scrollable header">
+
+                    <header><h2>Electronic - Type Power Steering</h2></header>
+                    <img src="images/handling/powersteer.png" width="100%" />
+                    <label>Electronic-Type Power Steering, a compact body and suspension and you're on you way to getting the G life </label>
+
+                    <header><h2>4.8m Turning Radius</h2></header>
+                    <img src="images/handling/radius.png" width="100%" />
+                    <label>Mirage G4 has the tightest turning radius of 4.8 meters, the lowest in its class</label>
+
+                </article>
+            </section>
+        </section>
+
+        <section role="region" id="greataccessories" data-position="right">
+            <section role="region">
+                <header class="fixed">
+                    <a id="btn-greataccessories-back" href="#"><span class="icon icon-back">back</span></a>
+                    <h1>Get Great Accessories</h1>
+                </header>
+                <article class="content scrollable header">
+
+                    <!--<header>Aero Styling</header>-->
+                    <header><h2>Front Airdam</h2></header>
+                    <img src="images/accessories/aero1.jpg" width="100%" />
+                    <label>MZ330666</label>
+                    <header><h2>Rear Airdam</h2></header>
+                    <img src="images/accessories/aero2.jpg" width="100%" />
+                    <label>MZ330673</label>
+                    <header><h2>Side Airdam</h2></header>
+                    <img src="images/accessories/aero3.jpg" width="100%" />
+                    <label>MZ330680</label>
+                    <header><h2>Rear Lip Spoiler</h2></header>
+                    <img src="images/accessories/aero4.jpg" width="100%" />
+                    <label>MZ330687</label>
+                    <!--                    <header>Interior Enhancements</header>-->
+                    <header><h2>Meter Hood Garnish</h2></header>
+                    <img src="images/accessories/interior1.jpg" width="100%" />
+                    <label>MZ330443</label>
+                    <header><h2>Armrest</h2></header>
+                    <img src="images/accessories/interior2.jpg" width="100%" />
+                    <label>MZ330444</label>
+                    <header><h2>KOS Key Cover</h2></header>
+                    <img src="images/accessories/interior3.jpg" width="100%" />
+                    <label>MZ330483</label>
+                    <header><h2>Luggage Tray</h2></header>
+                    <img src="images/accessories/interior4.jpg" width="100%" />
+                    <label>MZ330694</label>
+                    <header><h2>Cargo Net</h2></header>
+                    <img src="images/accessories/interior5.jpg" width="100%" />
+                    <label>MZ330695</label>
+                    <header><h2>Scuff Plates</h2></header>
+                    <img src="images/accessories/interior7.jpg" width="100%" />
+                    <label>MZ330709</label>
+                    <header><h2>RALLIART Shift Knob</h2></header>
+                    <img src="images/accessories/interior8.jpg" width="100%" />
+                    <label>330442</label>
+                    <header><h2>Floormats</h2></header>
+                    <img src="images/accessories/interior9.jpg" width="100%" />
+                    <label>MZ330692</label>
+                    <!--                     <header>Exterior Enhancements</header>-->
+                    <header><h2>Rear Bumper Foil</h2></header>
+                    <img src="images/accessories/exterior1.jpg" width="100%" />
+                    <label>MZ330688</label>
+                    <header><h2>Window Visors</h2></header>
+                    <img src="images/accessories/exterior2.jpg" width="100%" />
+                    <label>MZ330689</label>
+                    <header><h2>Muffler Cutter</h2></header>
+                    <img src="images/accessories/exterior3.jpg" width="100%" />
+                    <label>MZ330690</label>
+                    <header><h2>Daytime Running Lamps</h2></header>
+                    <img src="images/accessories/exterior4.jpg" width="100%" />
+                    <label>MZ330697</label>
+                    <header><h2>Door Sash Black Out</h2></header>
+                    <img src="images/accessories/exterior5.jpg" width="100%" />
+                    <label>MZ330464</label>
+
+                </article>
+            </section>
+        </section>
+
+         <section role="region" id="disclaim" data-position="right">
+            <section role="region">
+                <header class="fixed">
+                    <a id="btn-disclaim-back" href="#"><span class="icon icon-back">back</span></a>
+                    <h1>Disclaimer</h1>
+                </header>
+                <article class="content scrollable header">
+
+                    <header>
+                   
+                    </header>
+                  
+                </article>
+            </section>
+        </section>
+        
+        
+        <script type="text/javascript" defer src="js/status.js"></script>
+        <script type="text/javascript" defer src="js/seekbars.js"></script>
+        <script type="text/javascript" defer src="js/app.js"></script>
+        <script type="text/javascript" defer src="js/libs/jquery/jquery.js"></script>
+        <script type="text/javascript" defer src="js/mcolors.js"></script>
+        <script type="text/javascript" defer src="js/mquote.js"></script>
+        <script language="javascript">
+
+                            var slideBeginX;
+                            function touchStart(event) {
+                                event.preventDefault();//always prevent default Safari actions
+                                slideBeginX = event.targetTouches[0].pageX;
+                            }
+                            ;
+
+                            function touchMove(event) {
+                                event.preventDefault();
+                                // whatever you want to add here
+                            }
+                            ;
+
+                            function touchEnd(event) {
+                                event.preventDefault();
+                                var slideEndX = event.changedTouches[0].pageX;
+
+                                // Now add a minimum slide distance so that the links on the page are still clickable
+                                if (Math.abs(slideEndX - slideBeginX) > 200) {
+                                    if (slideEndX - slideBeginX > 0) {
+                                        // It means the user has scrolled from left to right
+                                    } else {
+                                        // It means the user has scrolled from right to left.
+                                    }
+                                    ;
+                                }
+                                ;
+                            }
+                            ;
+
+        </script>
+        <script>
+//            var mobile = (navigator.userAgent.search("Mobile") != -1);
+//            if (mobile) {
+//                //Let's reduce font-size when in landscape  
+//                //fs: current font-size
+//                var fs = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue('font-size'), 10);
+//                var mql = window.matchMedia("(orientation: portrait)");
+//
+//                if (mql.matches) { //portrait
+//                    document.documentElement.style.fontSize = fs + 'px';
+//                    document.body.classList.remove('landscape');
+//                } else { // landscape
+//                    document.documentElement.style.fontSize = fs * 0.7 + 'px';
+//                    document.body.classList.add('landscape');
+//                }
+//
+//                mql.addListener(function(m) {
+//                    if (m.matches) { //portrait
+//                        document.documentElement.style.fontSize = fs + 'px';
+//                        document.body.classList.remove('landscape');
+//                    }
+//                    else { //landscape
+//                        document.documentElement.style.fontSize = fs * 0.7 + 'px';
+//                        document.body.classList.add('landscape');
+//                    }
+//                });
+//            }
+        </script>
+    </body>
+</html>
+

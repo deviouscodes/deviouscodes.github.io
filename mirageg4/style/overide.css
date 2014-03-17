@@ -1,0 +1,59 @@
+
+.mbluehdr{
+	color:#64c3e9;
+}
+
+.dark-yellowhdr{
+	color:#d3e436;
+}
+
+
+ .pinkhdr{
+	color:#ea157d;
+}
+
+.bluehdr{
+	color:#39a8df;
+}
+
+.redhdr{
+	color:#bc0732;
+}
+
+.orangehdr{
+	color:#f3942e;
+}
+.greenhdr{
+    color: #093;
+}
+
+
+
+.mbm{
+	background :#1c5c90 ;	
+	color: #ffffff;
+}
+.mr{
+	background:#a50d27 ;
+	color: #ffffff;
+}
+.pb{
+	background:#111111	;
+	color: #ffffff;
+}
+.ggm{
+	background:#393939 	;
+	color: #ffffff;
+}
+.cs{
+	background:#8c8c8c 	;
+	color: #ffffff;
+}
+.sw{
+	background:#e0e1d6 	;
+	color: #ffffff;
+}
+.aw{
+	background:#e8e8e8;
+	color: #ffffff;
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Mirage G4",
+  "description": "Mitsubishi Mirage G4",
+  "launch_path": "/app.html",
+  "icons": {
+    "128": "/images/app_icon_128.png",
+    "60": "/images/app_icon_60.png"
+  },
+  "version": "1.1",
+  "developer": {
+    "name": "Mikko De Vera, Jr",
+    "url": "http://deviouscodes.com"
+  },
+  "default_locale": "en"
+}

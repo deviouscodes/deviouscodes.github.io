@@ -1,0 +1,140 @@
+<!doctype html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="UTF-8" />
+        <title>Sanji Jump</title>
+        <script type="text/javascript" src="js/phaser.min.js"></script>
+        <style type="text/css">
+            body {
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+
+        <script type="text/javascript">
+
+            var game = new Phaser.Game(288, 512, Phaser.AUTO, '', {preload: preload, create: create, update: update});
+
+            function preload() {
+
+                game.load.image('bg', 'assets/bg2.png');
+                game.load.image('toppipe', 'assets/toppipe.png');
+                game.load.image('bottompipe', 'assets/bottompipe.png');
+                game.load.image('floor', 'assets/floor.png');
+                game.load.spritesheet('sanji', 'assets/sanji2.png', 50.4, 71);
+
+
+            }
+            var player;
+            var platforms;
+            var cursors;
+
+            var stars;
+            var tilesprite;
+            var timer = 0;
+
+            var floor;
+var scoreText;
+var score=0;
+var scoretimer=-150;
+            function create() {
+
+                tilesprite = game.add.tileSprite(0, 0, 288, 512, 'bg');
+                pipes = game.add.group();
+
+                stars = game.add.group();
+
+                platforms = game.add.group();
+                var floorc = platforms.create(0, game.world.height - 112, 'floor');
+                floorc.body.immovable = true;
+
+
+                floor = game.add.tileSprite(0, game.world.height - 112, 288, 112, 'floor');
+
+
+                player = game.add.sprite(32, game.world.height - 350, 'sanji');
+                player.body.bounce.y = 0.2;
+
+                player.body.gravity.y = 500;
+
+                player.animations.add('jump', [0, 3, 4], 10, false);
+                //  player.body.setRectangle(10, 60, 18, 5);
+                player.body.setPolygon(15, 15, 30, 15, 30, 60, 15, 60);
+                //player.x=32;
+                player.animations.play('jump');
+                player.body.collideWorldBounds = true;
+                cursors = game.input.keyboard.createCursorKeys();
+//    sprite1 = game.add.sprite(32, game.world.height - 350);
+//    sprite1.body.setRectangle(10, 60, 18, 5);
+//   sprite1.body.bounce.y = 0.2;
+//
+//                sprite1.body.gravity.y = 500;
+//   
+//     sprite1.body.collideWorldBounds = true;
+  scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+
+            }
+
+
+            function spawnpipe() {
+                var hig = Math.random() * 150;
+                var toppipe = pipes.create(game.world.width, -100 - hig, 'toppipe');
+                var bottompipe = pipes.create(game.world.width, game.world.height - 170 - hig, 'bottompipe');
+//                var star = stars.create(game.world.width + 26, 0);
+//                star.body.setPolygon(0, 0, 26, 0, 26, game.world.height, 0, game.world.height);
+//                //toppipe.body.immovable = true;
+//star.body.immovable = true;
+                toppipe.body.velocity.x -= 100;
+                //bottompipe.body.immovable = true;
+                bottompipe.body.velocity.x -= 100;
+            //    star.body.velocity.x -= 100;
+            }
+
+            function update() {
+                game.physics.collide(player, platforms);
+                game.physics.overlap(player, pipes, sanjidied, null, this);
+            
+
+                timer++;
+                if (timer === 100) {
+
+                    spawnpipe();
+                    timer = 0;
+                    
+                }
+                scoretimer++;
+                if(scoretimer===100){
+            scoretimer=0;        
+            score+=1;
+                     scoreText.content=score;
+                     
+                }
+
+                if (cursors.up.isDown||game.input.pointer1.isDown) {
+                    player.animations.stop();
+
+                    player.animations.play('jump');
+                    player.body.velocity.y = -200;
+
+                }
+                tilesprite.tilePosition.x -= 1;
+                floor.tilePosition.x -= 2;
+            }
+            function sanjidied(player, pipes) {
+                console.log('died');
+                player.kill();
+                tilesprite.kill();
+                pipes.kill();
+                timer = 0;
+                score=0;
+                scoretimer=-150;
+                stars.destroy();
+                create();
+            }
+          
+
+        </script>
+
+    </body>
+</html>

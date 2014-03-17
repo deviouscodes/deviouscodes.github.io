@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mitsubishi Mirage G4</title>
+  <script>
+    var supportHIDPI = false;
+    var isFFOS = ("mozApps" in navigator && navigator.userAgent.search("Mobile") != -1);
+
+    if ( isFFOS ) {
+      var manifestUrl = 'http://deviouscodes.net/package/package.manifest';
+      var req = navigator.mozApps.installPackage(manifestUrl);
+      req.onsuccess = function() {
+        console.log(this.result.origin);
+      };
+      req.onerror = function() {
+        console.log(this.error.name);
+      };
+
+    } else {
+      window.location.href = "app.html"
+    }
+
+  </script>
+</head>
+<body>
+</body>
+</html>
